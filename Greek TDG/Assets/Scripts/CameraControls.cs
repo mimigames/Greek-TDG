@@ -4,12 +4,17 @@ using UnityEngine.EventSystems;
 
 public class CameraControls : MonoBehaviour {
     public float speed = 1;
+
+    public float edgeSpeed = 1;
+    public int scrollDistance = 5;
+
     public float maxHeight = 10;
     public float minHeight = 5;
 
     private float horizontalAxis;
     private float verticalAxis;
     private float zoomAxis;
+    private Vector2 mousePos;
 
     // Use this for initialization
     void Start() {
@@ -21,6 +26,7 @@ public class CameraControls : MonoBehaviour {
         horizontalAxis = Input.GetAxis("Horizontal");
         verticalAxis = Input.GetAxis("Vertical");
         zoomAxis = Input.GetAxis("Mouse ScrollWheel");
+        mousePos = Input.mousePosition;
 
         //X and Z movement
         if (!horizontalAxis.Equals(0f) || !verticalAxis.Equals(0f)) {
@@ -34,6 +40,30 @@ public class CameraControls : MonoBehaviour {
                 transform.position.z + (speed * verticalAxis));
 
         }
+
+        //Camera Edge Scroll
+        if (mousePos.x >= Screen.width - scrollDistance)
+            transform.position = transform.position = new Vector3(
+                transform.position.x + edgeSpeed,
+                transform.position.y,
+                transform.position.z);
+        if (mousePos.x < scrollDistance)
+            transform.position = transform.position = new Vector3(
+                transform.position.x - edgeSpeed,
+                transform.position.y,
+                transform.position.z);
+        if (mousePos.y >= Screen.height - scrollDistance)
+            transform.position = transform.position = new Vector3(
+                transform.position.x,
+                transform.position.y,
+                transform.position.z + edgeSpeed);
+        if (mousePos.y < scrollDistance)
+            transform.position = transform.position = new Vector3(
+                transform.position.x,
+                transform.position.y,
+                transform.position.z - edgeSpeed);
+
+
 
         //Zoom
         if (zoomAxis < 0f && transform.position.y < maxHeight) {
